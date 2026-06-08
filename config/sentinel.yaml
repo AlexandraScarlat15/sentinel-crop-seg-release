@@ -1,0 +1,4 @@
+sentinel:
+  cache:
+    max_size_gb: 100
+    keep_safe_after_processing: false

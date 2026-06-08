@@ -1,0 +1,6 @@
+catalog:
+  stac:
+    start_date: "2021-04-01T00:00:00Z"
+    end_date: "2021-09-30T23:59:59Z"
+    max_cloud_cover: 10
+    limit: 50

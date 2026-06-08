@@ -1,0 +1,29 @@
+pastis:
+  ignore_value: 255
+
+  remap_to_project_class_id:
+    0: 0      # background
+
+    1: 10     # meadow -> pasture
+    2: 3      # soft winter wheat -> wheat
+    3: 1      # corn -> maize
+    4: 4      # winter barley -> barley
+    5: 2      # winter rapeseed -> rapeseed
+    6: 4      # spring barley -> barley
+    7: 6      # sunflower -> sunflower
+
+    8: 255    # grapevine -> ignore
+    9: 7      # beet -> sugar_beet
+
+    10: 3     # winter triticale -> wheat
+    11: 3     # winter durum wheat -> wheat
+
+    12: 255   # fruits / vegetables / flowers -> ignore
+    13: 9     # potatoes -> potato
+    14: 10    # leguminous fodder -> pasture / forage
+    15: 8     # soybeans -> soybean
+
+    16: 255   # orchard -> ignore
+    17: 255   # mixed cereal -> ignore
+    18: 255   # sorghum -> ignore
+    19: 255   # void label -> ignore

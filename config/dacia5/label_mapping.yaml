@@ -1,0 +1,40 @@
+dacia5:
+  source_labels:
+    0: background
+    1: Common winter wheat
+    2: Common spring wheat
+    3: Corn
+    4: Peas
+    5: Late potatoes
+    6: Other potato crop
+    7: Potatoes for seed
+    8: Potatoes for seed
+    9: Sugar beets
+    10: Temporal grassland
+    11: Alfalfa_1
+    12: Permanent grassland
+    13: Corn silage
+    14: Soybean
+    15: Alfalfa_2
+    16: Winter rapeseed
+    17: Sunflower
+
+  remap_to_project_class_id:
+    0: 0
+    1: 3
+    2: 3
+    3: 1
+    4: null
+    5: 9
+    6: 9
+    7: 9
+    8: 9
+    9: 7
+    10: 10
+    11: 10
+    12: 10
+    13: 1
+    14: 8
+    15: 10
+    16: 2
+    17: 6

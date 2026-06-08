@@ -1,0 +1,9 @@
+paths:
+  # Root folder used to cache or store Sentinel-2 SAFE products.
+  sentinel_data_root: "data/raw/sentinel"
+
+  # Generic dataset root used by training/evaluation scripts.
+  dataset_root: "data/processed/sentinel_eurocrops"
+
+  # Output folder for generated image-mask patches and metadata.
+  dataset_output_dir: "data/processed/sentinel_eurocrops/generated"

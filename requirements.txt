@@ -1,0 +1,16 @@
+geopandas==1.1.2
+matplotlib==3.10.8
+numpy==2.4.2
+pandas==3.0.1
+pystac_client==0.9.0
+PyYAML==6.0.3
+rasterio==1.5.0
+Requests==2.32.5
+Shapely==2.1.2
+torch==2.10.0
+Pillow
+scipy
+h5py
+scikit-learn
+joblib
+pyproj

@@ -1,0 +1,122 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Python packaging
+*.egg-info/
+.eggs/
+dist/
+build/
+pip-wheel-metadata/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.key
+*.token
+
+# Sentinel / geospatial raw data
+*.SAFE/
+*.zip
+*.tif
+*.tiff
+*.jp2
+
+# Local data folders
+/data/raw/
+/data/interim/
+/data/processed/
+/data/external/
+/data/generated/
+
+# Generated datasets
+/output_dataset/
+
+# Model and training artifacts
+/checkpoints/
+/models/
+/runs/
+/wandb/
+/tensorboard/
+/logs/
+
+# Generated outputs
+/outputs/
+/figures/
+/plots/
+
+# Generated tool reports
+/tools/reports/
+/tools/global_class_distribution.csv
+/tools/per_dataset_class_distribution.csv
+
+# Index/cache files
+index.json
+*.idx
+
+# Coverage
+.coverage
+htmlcov/
+
+# Local scratch space
+/scratch/
+
+# Local temporary configs
+tmp_config_*/
+
+# Generated dataset folders
+/dataset/
+/datasets/
+/output_dataset*/
+/data/roi_cache/
+
+
+# NumPy arrays and compressed arrays
+*.npy
+*.npz
+
+# ML artifacts
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.joblib
+*.pkl
+
+# Generated reports / local audit files
+*_audit.txt
+geospatial_audit.txt
+zenodo_code_audit*.txt
+cleanup_audit_files.txt
+project_structure.txt
+project_files_tracked.txt

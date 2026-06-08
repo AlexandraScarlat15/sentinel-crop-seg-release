@@ -1,0 +1,55 @@
+dataset:
+  
+  target:
+    class_id: 8           # null 
+    min_target_ratio: 0.05
+    min_target_pixels: 800
+    total_patches: 10000   
+
+  patch:
+    size: 256
+    stride: 128
+
+  max_patches_per_roi: 1000
+
+  min_foreground_ratio: 0.20
+  max_nodata_fraction: 0.05
+
+  max_cloud_fraction: 0.01
+  max_cloud_on_foreground_fraction: 0.005
+  bad_scl_classes: [0, 1, 2, 3, 7, 8, 9, 10, 11]
+  cloud_dilate_radius: 2
+
+  use_b02_brightness_filter: false
+  b02_bright_threshold: 2000
+  max_b02_bright_fraction: 0.02
+  max_b02_bright_on_foreground_fraction: 0.01
+
+  roi:
+    strategy: "hotcell"     # "grid" / "hotcell"
+    size_km: 30
+
+    
+    top_n_rois: 200
+    min_polygon_count: 20
+    min_total_area_m2: 5000000
+    min_coverage: 0.1
+
+    hotcell:
+      cell_km: 5
+      top_k_cells: 2000
+      rois_from_cells: 300
+      min_target_area_m2: 200000
+      class_id_column: "class_id"
+
+  bands:
+    B02: { resolution: 10 }
+    B03: { resolution: 10 }
+    B04: { resolution: 10 }
+    B08: { resolution: 10 }
+    B05: { resolution: 20 }
+    B06: { resolution: 20 }
+    B07: { resolution: 20 }
+    B8A: { resolution: 20 }
+    B11: { resolution: 20 }
+    B12: { resolution: 20 }

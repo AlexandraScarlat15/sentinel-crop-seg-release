@@ -1,0 +1,84 @@
+classes:
+  background:
+    id: 0
+    include: []
+    exclude: []
+
+  maize:
+    id: 1
+    include:
+      - maize
+      - corn
+    exclude: []
+
+  rapeseed:
+    id: 2
+    include:
+      - rapeseed
+      - rape seed
+      - winter rape
+      - oilseed rape
+    exclude:
+      - grape
+
+  wheat:
+    id: 3
+    include:
+      - wheat
+      - triticale
+      - rye
+    exclude:
+      - buckwheat
+
+  barley:
+    id: 4
+    include:
+      - barley
+    exclude: []
+
+  oats:
+    id: 5
+    include:
+      - oats
+    exclude: []
+
+  sunflower:
+    id: 6
+    include:
+      - sunflower
+    exclude: []
+
+  sugar_beet:
+    id: 7
+    include:
+      - sugar beet
+      - beet
+    exclude:
+      - fodder beet
+      - beetroot
+
+  soybean:
+    id: 8
+    include:
+      - soybean
+      - soy beans
+      - soya
+    exclude: []
+
+  potato:
+    id: 9
+    include:
+      - potato
+    exclude: []
+
+  pasture:
+    id: 10
+    include:
+      - pasture
+      - grassland
+      - meadow
+      - arable grass
+      - clover
+      - lucerne
+      - alfalfa
+    exclude: []

@@ -1,0 +1,8 @@
+eurocrops:
+  # Path to a EuroCrops shapefile for the selected study area.
+  # Example:
+  # shapefile_path: "data/external/eurocrops/AT_2021/AT_2021_EC21.shp"
+  shapefile_path: "data/external/eurocrops/AT_2021/AT_2021_EC21.shp"
+
+  # EuroCrops crop-name column used for label harmonization.
+  crop_column: "EC_trans_n"

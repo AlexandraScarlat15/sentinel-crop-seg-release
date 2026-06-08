@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinel-crop-seg"
+version = "0.1.0"
+description = "Dataset generation and semantic segmentation utilities for Sentinel-2 agricultural crop mapping."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+  { name = "Alexandra Nicoleta Scarlat" }
+]
+keywords = [
+  "sentinel-2",
+  "eurocrops",
+  "semantic-segmentation",
+  "remote-sensing",
+  "agriculture",
+  "crop-mapping"
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: GIS"
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "PyYAML",
+  "geopandas",
+  "rasterio",
+  "shapely",
+  "pystac-client",
+  "torch",
+  "matplotlib",
+  "requests",
+  "scikit-learn",
+  "joblib",
+  "scipy",
+  "pyproj",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest"
+]
+
+[project.scripts]
+sentinel-crop-generate = "sentinel_crop_seg.cli.generate:main"
+sentinel-crop-convert-pastis = "sentinel_crop_seg.cli.convert_pastis:main"
+sentinel-crop-convert-dacia5 = "sentinel_crop_seg.cli.convert_dacia5:main"
+sentinel-crop-train-unet = "sentinel_crop_seg.cli.train_unet:main"
+sentinel-crop-train-rf = "sentinel_crop_seg.cli.train_random_forest:main"
+sentinel-crop-evaluate = "sentinel_crop_seg.cli.evaluate:main"
+sentinel-crop-predict = "sentinel_crop_seg.cli.predict:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+  "sentinel_crop_seg*",
+  "src*"
+]

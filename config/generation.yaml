@@ -1,0 +1,3 @@
+﻿generation:
+  satellite: "sentinel2"
+  label_source: "eurocrops"

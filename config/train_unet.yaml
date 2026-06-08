@@ -1,0 +1,79 @@
+experiment:
+  name: "unet4l_b48_10b_weighted_ce_dice04"
+
+paths:
+  # If manifest_csv is set, train_root / val_root / test_root are used as dataset roots
+  # for resolving files listed in the manifest when needed.
+  manifest_csv: "data/processed/sentinel_eurocrops/indexes/manifest.csv"
+
+  train_root: "data/processed/sentinel_eurocrops"
+  val_root: "data/processed/sentinel_eurocrops"
+  test_root: "data/processed/sentinel_eurocrops"
+
+  out_dir: "outputs/experiments/unet4l_b48_10b_weighted_ce_dice04"
+  resume_ckpt: null
+
+data:
+  train_limit: 0
+  val_limit: 0
+
+  in_channels: 10
+  num_classes: 11
+
+  band_indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  normalize_mode: "scale_10000"
+  scale_divisor: 10000.0
+
+  # Used only when manifest_csv is null and the dataset is loaded directly
+  # from train_root / val_root folders.
+  # Supported values: "npy", "geotiff".
+  sample_format: "npy"
+
+model:
+  base: 48
+  dropout_bottleneck: 0.1
+  dropout_decoder: 0.0
+  up_mode: "bilinear"
+
+loss:
+  dice_weight: 0.4
+  ignore_index: null
+  dice_ignore_background: true
+  class_weights:
+    - 0.25   # background
+    - 1.00   # maize
+    - 1.50   # rapeseed
+    - 0.75   # wheat
+    - 1.00   # barley
+    - 3.00   # oats
+    - 2.50   # sunflower
+    - 1.50   # sugar_beet
+    - 2.00   # soybean
+    - 3.00   # potato
+    - 1.00   # pasture
+
+augmentation:
+  augment: true
+  augment_prob: 1.0
+
+loader:
+  num_workers: 2
+  pin_memory: true
+  persistent_workers: true
+  prefetch_factor: 2
+
+training:
+  epochs: 260
+  batch_size: 2
+  lr: 0.0003
+  seed: 42
+
+scheduler:
+  lr_patience: 4
+  lr_factor: 0.5
+  lr_min: 0.000001
+
+early_stopping:
+  early_stop_patience: 20
+  min_delta: 0.0001
