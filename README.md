@@ -587,10 +587,10 @@ These checks validate the main public pipeline, but they do not replace full-sca
 
 ## License
 
-This project is released under the MIT License. See `LICENSE.md` for details.
+This project is released under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See `LICENSE.md` for details.
 
 ## Citation
 
-If this repository is archived through Zenodo, cite the archived release DOI associated with the version used in your work.
+If this repository is archived through Zenodo, cite the archived release DOI associated with the version used in this work.
 
 A formal citation file can be added once the release metadata and DOI are finalized.
