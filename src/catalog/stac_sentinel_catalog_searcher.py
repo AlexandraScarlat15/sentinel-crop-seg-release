@@ -21,7 +21,7 @@ class STACSentinelCatalogSearcher:
     Sentinel-2 catalog discovery via Copernicus STAC.
     """
 
-    STAC_URL = "https://catalogue.dataspace.copernicus.eu/stac"
+    STAC_URL = "https://stac.dataspace.copernicus.eu/v1/"
     COLLECTION = "sentinel-2-l2a"
 
     def __init__(self) -> None:

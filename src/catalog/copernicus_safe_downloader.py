@@ -10,8 +10,8 @@ class CopernicusSafeDownloader:
     Downloads Sentinel SAFE products via Copernicus Zipper API.
     """
 
-    ZIPPER_URL = (
-        "https://zipper.dataspace.copernicus.eu/odata/v1/"
+    DOWNLOAD_URL = (
+        "https://download.dataspace.copernicus.eu/odata/v1/"
         "Products({product_id})/$value"
     )
 
@@ -31,7 +31,7 @@ class CopernicusSafeDownloader:
 
         token = self.auth.get_access_token()
 
-        url = self.ZIPPER_URL.format(product_id=product_id)
+        url = self.DOWNLOAD_URL.format(product_id=product_id)
         zip_path = out_dir / f"{product_id}.zip"
 
         headers = {
