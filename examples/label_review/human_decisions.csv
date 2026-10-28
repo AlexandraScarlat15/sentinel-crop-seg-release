@@ -1,0 +1,4 @@
+cohort,parcel_key,decision
+AT_2021,AT_2021|fid=1002,exclude_patch
+AT_2021,AT_2021|fid=1001,keep
+FR_2018,FR_2018|fid=2001,keep

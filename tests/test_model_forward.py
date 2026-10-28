@@ -1,6 +1,6 @@
 ﻿import torch
 
-from src.training.model_unet_4levels import UNet4LevelsGN
+from sentinel_crop_seg.core.training.model_unet_4levels import UNet4LevelsGN
 
 
 def test_unet_forward_output_shape():

@@ -1,7 +1,7 @@
 ﻿import torch
 import pytest
 
-from src.training.losses import CrossEntropyDiceLoss, dice_loss_multiclass
+from sentinel_crop_seg.core.training.losses import CrossEntropyDiceLoss, dice_loss_multiclass
 
 
 def test_cross_entropy_dice_loss_returns_finite_scalar_and_backpropagates():

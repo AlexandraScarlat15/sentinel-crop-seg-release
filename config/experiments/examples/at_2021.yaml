@@ -1,0 +1,19 @@
+schema_version: 1
+name: at_2021_single_country_demo
+settings:
+  eurocrops:
+    shapefile_path: data/external/eurocrops/AT_2021/AT_2021_EC21.shp
+  catalog:
+    stac:
+      start_date: "2021-04-01T00:00:00Z"
+      end_date: "2021-09-30T23:59:59Z"
+      max_cloud_cover: 10
+  dataset:
+    roi:
+      strategy: grid
+    target:
+      class_id: null
+      total_patches: 100
+    max_cloud_fraction: 0.01
+  paths:
+    dataset_output_dir: data/processed/examples/at_2021_demo

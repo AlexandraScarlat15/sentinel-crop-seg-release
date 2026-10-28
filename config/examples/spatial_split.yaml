@@ -1,0 +1,26 @@
+# Standalone configuration: do NOT place in config/ root.
+# Coordinates in the manifest are projected source-CRS bounding boxes.
+splitting:
+  strategy: spatial_block
+  spatial:
+    crs: "EPSG:3035"
+    block_size_m: 30000
+    guard_distance_m: 1280
+  grouping:
+    same_window_same_partition: true
+    # Optional: requires stable, globally unique parcel identifiers in CSV.
+    parcel_id_column: null
+  partitions:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+  allocation:
+    random_seed: 42
+    candidate_seeds: 200
+    stratify_by: country   # country | cohort | none
+    priority: [test, val, train]
+  quality:
+    verify_leakage: true
+    fail_on_leakage: true
+  outputs:
+    save_split_map: true

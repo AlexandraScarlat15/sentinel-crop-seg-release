@@ -1,4 +1,4 @@
-from src.data.sentinel_product_metadata import (
+from sentinel_crop_seg.core.data.sentinel_product_metadata import (
     infer_sentinel_scene_date,
     infer_sentinel_tile_id,
 )

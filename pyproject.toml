@@ -4,62 +4,46 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sentinel-crop-seg"
-version = "0.1.0"
-description = "Dataset generation and semantic segmentation utilities for Sentinel-2 agricultural crop mapping."
+version = "2.0.0"
+description = "Curated Sentinel-2 / EuroCrops crop segmentation research software (draft)"
 readme = "README.md"
 requires-python = ">=3.11"
-authors = [
-  { name = "Alexandra Nicoleta Scarlat" }
-]
-keywords = [
-  "sentinel-2",
-  "eurocrops",
-  "semantic-segmentation",
-  "remote-sensing",
-  "agriculture",
-  "crop-mapping"
-]
-classifiers = [
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.11",
-  "Operating System :: OS Independent",
-  "Topic :: Scientific/Engineering :: Artificial Intelligence",
-  "Topic :: Scientific/Engineering :: GIS"
-]
+authors = [{name = "Alexandra Nicoleta Scarlat"}]
+keywords = ["sentinel-2", "eurocrops", "semantic-segmentation", "crop-mapping"]
 dependencies = [
-  "numpy",
-  "pandas",
-  "PyYAML",
-  "geopandas",
-  "rasterio",
-  "shapely",
-  "pystac-client",
-  "torch",
-  "matplotlib",
-  "requests",
-  "scikit-learn",
-  "joblib",
-  "scipy",
-  "pyproj",
+  "numpy", "pandas", "PyYAML", "geopandas", "rasterio", "shapely",
+  "pystac-client", "torch", "matplotlib", "requests",
+  "scipy", "pyproj",
 ]
 
 [project.optional-dependencies]
-dev = [
-  "pytest"
-]
+dev = ["pytest"]
 
 [project.scripts]
 sentinel-crop-generate = "sentinel_crop_seg.cli.generate:main"
+sentinel-crop-generate-cohorts = "sentinel_crop_seg.cli.generate_cohorts:main"
+sentinel-crop-select-weighted-calendar = "sentinel_crop_seg.cli.select_weighted_calendar:main"
+sentinel-crop-adapt-patch-log = "sentinel_crop_seg.cli.adapt_patch_log:main"
+sentinel-crop-merge-cohorts = "sentinel_crop_seg.cli.merge_cohorts:main"
+sentinel-crop-audit-generation-config = "sentinel_crop_seg.cli.audit_generation_config:main"
+sentinel-crop-split-spatial = "sentinel_crop_seg.cli.split_spatial:main"
+sentinel-crop-split-oof = "sentinel_crop_seg.cli.split_oof:main"
+sentinel-crop-train-unet = "sentinel_crop_seg.cli.train_unet:main"
+sentinel-crop-evaluate-unet = "sentinel_crop_seg.cli.evaluate_unet:main"
+sentinel-crop-predict-unet = "sentinel_crop_seg.cli.predict_unet:main"
+sentinel-crop-plot-training = "sentinel_crop_seg.cli.plot_training:main"
+sentinel-crop-plot-evaluation = "sentinel_crop_seg.cli.plot_evaluation:main"
+sentinel-crop-filter-post-training = "sentinel_crop_seg.cli.filter_post_training:main"
+sentinel-crop-audit-cohorts = "sentinel_crop_seg.cli.audit_cohorts:main"
 sentinel-crop-convert-pastis = "sentinel_crop_seg.cli.convert_pastis:main"
 sentinel-crop-convert-dacia5 = "sentinel_crop_seg.cli.convert_dacia5:main"
-sentinel-crop-train-unet = "sentinel_crop_seg.cli.train_unet:main"
-sentinel-crop-train-rf = "sentinel_crop_seg.cli.train_random_forest:main"
-sentinel-crop-evaluate = "sentinel_crop_seg.cli.evaluate:main"
-sentinel-crop-predict = "sentinel_crop_seg.cli.predict:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = [
-  "sentinel_crop_seg*",
-  "src*"
-]
+# Exactly one top-level package. The internal modules live in
+# `sentinel_crop_seg.core`; nothing is installed under a generic name such as
+# `src`, which would collide with other distributions in site-packages.
+include = ["sentinel_crop_seg*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

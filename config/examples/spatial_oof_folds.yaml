@@ -1,0 +1,10 @@
+# Reusable NEW OOF experiments; does NOT mutate frozen article folds.
+oof_folds:
+  folds: 6                      # any integer 2..32, if enough spatial units
+  seed: 42
+  block_size_m: 30000.0         # whole 30 km EPSG:3035 spatial cells
+  guard_distance_m: 1280.0      # buffer between held-out and model training
+  crs: EPSG:3035
+  inner_val_fraction: 0.10      # early stopping NEVER on the OOF held-out fold
+  require_spatial_tier: true
+  require_window_id: true

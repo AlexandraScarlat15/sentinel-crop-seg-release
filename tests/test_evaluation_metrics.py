@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 import torch
 
-from src.evaluation.metrics import (
+from sentinel_crop_seg.core.evaluation.metrics import (
     compute_iou_from_confusion_matrix,
     compute_mean_class_accuracy_from_confusion_matrix,
     compute_mean_iou_from_confusion_matrix,

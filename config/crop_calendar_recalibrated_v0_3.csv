@@ -1,0 +1,66 @@
+country,crop,start,end
+AT,Maize,05-10,09-30
+AT,Rapeseed,04-01,07-20
+AT,Wheat,04-01,08-15
+AT,Barley,04-01,08-15
+AT,Oats,04-15,08-15
+AT,Sunflower,05-10,09-30
+AT,Sugar beet,04-20,09-30
+AT,Soybean,05-15,09-30
+AT,Potato,05-01,09-30
+AT,Grassland / pasture,04-01,09-30
+AT,Arable grass,04-15,09-30
+AT,Clover,04-15,09-30
+AT,Lucerne / alfalfa,04-15,09-30
+CZ,Maize,05-10,09-30
+CZ,Rapeseed,04-01,07-20
+CZ,Wheat,04-01,08-15
+CZ,Barley,04-01,08-15
+CZ,Oats,04-15,08-15
+CZ,Sunflower,05-10,09-30
+CZ,Sugar beet,04-20,09-30
+CZ,Soybean,05-15,09-30
+CZ,Potato,05-01,09-30
+CZ,Grassland / pasture,04-01,09-30
+CZ,Arable grass,04-15,09-30
+CZ,Clover,04-15,09-30
+CZ,Lucerne / alfalfa,04-15,09-30
+DE,Maize,05-10,09-30
+DE,Rapeseed,04-01,07-20
+DE,Wheat,04-01,08-15
+DE,Barley,04-01,08-15
+DE,Oats,04-15,08-15
+DE,Sunflower,05-10,09-30
+DE,Sugar beet,04-20,09-30
+DE,Soybean,05-15,09-30
+DE,Potato,05-01,09-30
+DE,Grassland / pasture,04-01,09-30
+DE,Arable grass,04-15,09-30
+DE,Clover,04-15,09-30
+DE,Lucerne / alfalfa,04-15,09-30
+FR,Maize,04-15,09-30
+FR,Rapeseed,04-01,07-15
+FR,Wheat,04-01,07-31
+FR,Barley,04-01,07-31
+FR,Oats,04-01,08-15
+FR,Sunflower,05-01,09-30
+FR,Sugar beet,04-01,09-30
+FR,Soybean,05-10,09-30
+FR,Potato,04-15,09-30
+FR,Grassland / pasture,04-01,09-30
+FR,Arable grass,04-01,09-30
+FR,Clover,04-01,09-30
+FR,Lucerne / alfalfa,04-01,09-30
+SK,Maize,05-01,09-30
+SK,Rapeseed,04-01,07-15
+SK,Wheat,04-01,07-31
+SK,Barley,04-01,07-31
+SK,Oats,04-01,08-01
+SK,Sunflower,05-01,09-30
+SK,Sugar beet,04-15,09-30
+SK,Soybean,05-10,09-30
+SK,Potato,05-01,09-30
+SK,Grassland / pasture,04-01,09-30
+SK,Arable grass,04-01,09-30
+SK,Clover,04-01,09-30
+SK,Lucerne / alfalfa,04-01,09-30

@@ -4,9 +4,10 @@ from pathlib import Path
 
 import pytest
 
-from src.evaluation.metadata_filters import (
+from sentinel_crop_seg.core.evaluation.metadata_filters import (
     month_is_allowed,
     parse_scene_month,
+    read_allowed_manifest_sample_keys,
     read_allowed_sample_names_by_month,
     validate_month_filter_args,
     resolve_sample_name_column,
@@ -140,4 +141,22 @@ def test_read_allowed_sample_names_by_month_accepts_sample_id_column(tmp_path: P
     assert allowed == {
         "sample_000001",
         "sample_000002",
+    }
+
+
+def test_read_allowed_manifest_sample_keys_normalizes_patch_suffix(tmp_path: Path):
+    sidecar = tmp_path / "phenology.csv"
+    sidecar.write_text(
+        "\n".join(
+            [
+                "dataset,sample_id,phenology_group",
+                "AT_2021_beet_v2,AT_2021_beet_v2/sample_000001.npy,WEIGHTED90",
+                "AT_2021_beet_v2,sample_000002,BELOW90",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    assert read_allowed_manifest_sample_keys(sidecar, group="WEIGHTED90") == {
+        ("AT_2021_beet_v2", "sample_000001")
     }

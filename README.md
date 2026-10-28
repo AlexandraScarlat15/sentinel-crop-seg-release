@@ -1,596 +1,211 @@
-# Sentinel Crop Segmentation
+# Sentinel-2 Crop Segmentation — curated research software
 
-Research-oriented pipeline for generating Sentinel-2 crop segmentation datasets from EuroCrops parcel annotations, training baseline crop segmentation models, and evaluating model predictions.
+**Version 2.0.0: software-only distribution.** The historical research dataset and trained checkpoints are separate records.
 
-The project focuses on a Sentinel-2 + EuroCrops workflow:
+This selectively staged package demonstrates the **Sentinel-2 L2A + EuroCrops**
+dataset generation workflow and four-level U-Net training. It does **not**
+include the full historical research workspace or the Random Forest baseline.
 
-```text
-EuroCrops parcel annotations
-+ Sentinel-2 Level-2A imagery
--> image-mask patch generation
--> model training
--> evaluation
--> prediction export and visualization
-```
+## Where to start
 
-The repository is intended to support reproducible research code. Large raw datasets, generated datasets, Sentinel-2 products, model checkpoints, and experiment outputs are not included in the repository.
+| If you want to | Go to |
+|---|---|
+| **run anything at all** | [`docs/getting_started.md`](docs/getting_started.md) — prerequisites, a no-network install check, and a first small run |
+| try the commands with no data of your own | [`examples/README.md`](examples/README.md) — every documented command, on synthetic inputs |
+| understand a configuration key | [`docs/configuration_reference.md`](docs/configuration_reference.md) |
+| know what the labels are worth | [`docs/taxonomy_and_label_quality.md`](docs/taxonomy_and_label_quality.md) — **read before interpreting any metric** |
+| evaluate on another dataset | [`docs/external_dataset_conversion.md`](docs/external_dataset_conversion.md) — PASTIS and DACIA5 converters |
 
-## Implemented features
+Each pipeline stage is a separate command, on purpose: you supply your own
+dataset and your own checkpoint, and nothing runs implicitly.
 
-The current implementation includes:
+## Included core functionality
 
-* Sentinel-2 / EuroCrops dataset generation;
-* EuroCrops crop-label harmonization into a reduced crop taxonomy;
-* grid-based and hotcell-based ROI selection;
-* Sentinel-2 STAC search and local product caching;
-* export of aligned image-mask patches as NumPy arrays and GeoTIFF files;
-* U-Net training on root-folder or manifest-based datasets;
-* Random Forest baseline training;
-* unified evaluation for U-Net and Random Forest models;
-* prediction export with optional color masks and visualization panels;
-* command-line configuration overrides through `--override key=value`;
-* a minimal end-to-end smoke test for validating the full pipeline.
+- EuroCrops label mapping into an 11-class segmentation taxonomy;
+- Sentinel-2 scene discovery, SAFE loading, SCL/nodata/cloud filtering;
+- grid/hotcell ROI selection, NPY and GeoTIFF image-mask generation;
+- patch-level Sentinel product and geographic provenance (patch log v3);
+- conversion to a georeferenced manifest, spatial splitting, leakage auditing;
+- NEW geographic OOF fold manifest planning with configurable K, outer-guard and inner validation (no model training);
+- independent, versioned country/year recipe planning with opt-in per-cohort execution;
+- optional validated crop-calendar windows applied to Sentinel-2 scene acquisition, not to individual parcel labels;
+- independent TRAIN-only pixel-weighted calendar selection and threshold sensitivity (default 90%); untouched validation/test;
+- U-Net training, inference, IoU-based evaluation, standalone training/evaluation plotting and selected synthetic tests;
+- source configuration files, including a versioned five-country crop-calendar CSV;
+- audited country/year coverage and a human-approved post-training review filter.
+- PASTIS and DACIA5 label conversion for independent cross-dataset evaluation.
 
-## Repository structure
+The five-country calendar CSV is a **versioned reference**. New, explicitly
+configured recipes can enforce crop-window UNION selection on the dates of
+Sentinel-2 scenes. This does **not** prove the frozen article dataset used
+that selection, or that each parcel passed a crop-specific temporal test.
 
-```text
-sentinel_crop_seg/        Public package API and installed CLI entrypoints
-src/                      Core implementation
-  catalog/                Sentinel-2 catalog search
-  data/                   EuroCrops and Sentinel-2 loading/cache utilities
-  pipeline/               Dataset generation pipeline
-  selection/              ROI selection strategies
-  training/               Dataset loaders, U-Net model, loss, training logic
-  utils/                  Spatial and helper utilities
-scripts/                  Public utility scripts and E2E smoke test
-config/                   YAML configuration files
-docs/                     Additional documentation
-tests/                    Unit and integration-style tests
-```
+## Install (fresh environment)
 
-## Installation
-
-The package requires Python 3.11 or newer.
-
-From the repository root, create and activate a virtual environment.
-
-On Linux/macOS:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-```
-
-On Windows PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-```
-
-Install the package in editable mode with development dependencies:
+Use Python >=3.11, then:
 
 ```bash
 python -m pip install -e ".[dev]"
+python -m pytest tests/test_generation_cloud_quality.py tests/test_roi_area_modes.py -q
 ```
 
-For a normal installation without development dependencies:
-
-```bash
-python -m pip install -e .
-```
-
-The main Python dependencies are declared in `pyproject.toml`. The repository also includes `requirements.txt` for users who prefer a pinned environment.
-
-After installation, the public command-line entrypoints should be available:
+Inspect available commands:
 
 ```bash
 sentinel-crop-generate --help
+sentinel-crop-generate-cohorts --help
+sentinel-crop-select-weighted-calendar --help
+sentinel-crop-audit-generation-config --help
+sentinel-crop-adapt-patch-log --help
+sentinel-crop-merge-cohorts --help
+sentinel-crop-split-spatial --help
+sentinel-crop-split-oof --help
 sentinel-crop-train-unet --help
-sentinel-crop-train-rf --help
-sentinel-crop-evaluate --help
-sentinel-crop-predict --help
+sentinel-crop-evaluate-unet --help
+sentinel-crop-predict-unet --help
+sentinel-crop-plot-training --help
+sentinel-crop-plot-evaluation --help
+sentinel-crop-audit-cohorts --help
+sentinel-crop-filter-post-training --help
 ```
 
-## Data requirements
-
-This repository does not include external geospatial datasets or generated artifacts.
-
-To run the full data generation pipeline, you need:
-
-* EuroCrops shapefiles available locally;
-* internet access for Sentinel-2 STAC search and product retrieval, unless the required Sentinel-2 products are already cached locally;
-* enough local disk space for Sentinel-2 SAFE products, generated patches, checkpoints, and outputs.
-
-The EuroCrops shapefile path is configured in `config/eurocrops.yaml`:
-
-```yaml
-eurocrops:
-  shapefile_path: "data/external/eurocrops/AT_2021/AT_2021_EC21.shp"
-  crop_column: "EC_trans_n"
-```
-
-For local runs, you can either edit the YAML file locally or use CLI overrides without changing tracked configuration files.
-
-Example:
+For a trusted U-Net checkpoint and a versioned-label manifest (defaults to
+historical labels when `--label-config` is omitted):
 
 ```bash
-sentinel-crop-generate \
-  --config-dir config \
-  --run-tag example_run \
-  --override eurocrops.shapefile_path="path/to/AT_2021_EC21.shp"
+sentinel-crop-evaluate-unet --checkpoint path/to/unet.pt \
+  --manifest-csv path/to/split_manifest.csv --split test \
+  --output-dir outputs/unet_evaluation --device cpu
+
+sentinel-crop-predict-unet --checkpoint path/to/unet.pt \
+  --manifest-csv path/to/split_manifest.csv --split test \
+  --output-dir outputs/unet_predictions --save-color --device cpu
 ```
 
-## Environment variables
+These commands use the checkpoint's exact band indices, normalization and
+optional calendar channels by default, and refuse to overwrite existing
+output directories. They do not include Random Forest.
 
-If Sentinel-2 product download requires Copernicus Data Space Ecosystem credentials, set them as environment variables before running the generation pipeline.
+Checkpoints are read with PyTorch's restricted reader, which accepts tensors,
+plain containers and primitives. A checkpoint that also stores custom pickled
+objects is **refused**, because loading one executes code from whoever wrote
+the file. If you can vouch for its origin, pass `--allow-unsafe-checkpoint`.
+Still load checkpoints **only from sources you trust**: the restricted reader
+narrows the risk, it does not establish provenance.
 
-On Linux/macOS:
+Existing training and evaluation reports can be plotted without a model or
+dataset: `sentinel-crop-plot-training --run-dir ... --out-dir ...` and
+`sentinel-crop-plot-evaluation --eval-dir ... --out-dir ...`. They produce
+PNG/PDF/SVG figures, class-level tables and percent-normalized confusion
+matrices as appropriate. For input contracts, custom class labels and
+non-destructive output handling see
+[`docs/independent_plotting.md`](docs/independent_plotting.md).
+
+**Start here:** [`docs/getting_started.md`](docs/getting_started.md). It states
+what you need before the generator will run — a free Copernicus Data Space
+account and two environment variables, a EuroCrops shapefile this archive does
+not contain — how to verify the install with no external data at all, and a
+first small run. It also says plainly that this generator produces new
+datasets and does not reproduce the published benchmark.
+
+For the full list of settings, see
+[`docs/configuration_reference.md`](docs/configuration_reference.md).
+
+**Before interpreting any metric produced with this package**, read
+[`docs/taxonomy_and_label_quality.md`](docs/taxonomy_and_label_quality.md). The
+shipped class map in `config/classes.yaml` was checked against an independent
+crop hierarchy over 12,073,602 parcels with a definitive expectation, and nine
+of its ten crop classes reach 99.836-100% recall. Three measured exceptions
+matter when reading a result: pasture labels omit alpine and French extensive
+grazing surfaces entirely, so part of any pasture error is a missing label
+rather than a wrong prediction; the wheat rule also captures ryegrass; and one
+French source code cannot distinguish sugar beet from chard.
+
+That document states the population behind every figure — which is a set of
+EuroCrops source files, not the published benchmark — names the artifact each
+number came from, and explains why per-pixel metrics are not comparable across
+countries. The supporting evidence files are not distributed, so the numbers
+are reported measurements with stated scope rather than claims you can
+reproduce from this archive alone.
+Developers extending the public API should follow
+[`docs/code_documentation_style.md`](docs/code_documentation_style.md):
+concise docstrings with `Args`/`Returns` and comments reserved for
+scientific assumptions and non-obvious safeguards.
+For Python, Sentinel-2 and EuroCrops provenance requirements, see
+[`docs/reproducibility_environment.md`](docs/reproducibility_environment.md).
+Read [`docs/attribution_and_rights.md`](docs/attribution_and_rights.md)
+before proposing any public upload. It records unresolved software ownership,
+source-edition attribution and derived-data/weights redistribution conditions;
+the presence of `LICENSE.md` is not authorization for every included or
+externally supplied research asset.
+For new generation experiments, see `docs/generation_experiment_recipes.md`.
+The `--experiment` option uses an explicit versioned recipe, defaults to
+isolated configuration and strict resume, and preserves legacy defaults when
+omitted. The source EuroCrops dataset,
+Sentinel-2 SAFE products and output data must be supplied separately.
+
+A no-download configuration check (run from this package root) is:
 
 ```bash
-export COPERNICUS_USERNAME="your_username"
-export COPERNICUS_PASSWORD="your_password"
+sentinel-crop-generate-cohorts --config-dir config \
+  --plan config/experiments/examples/multi_cohort_calendar.yaml
 ```
 
-On Windows PowerShell:
+It reports `mode: validated_plan_only`. These example vector paths are
+illustrative. Do not add `--execute` without confirming the real local data,
+source rights, and output destinations.
 
-```powershell
-$env:COPERNICUS_USERNAME = "your_username"
-$env:COPERNICUS_PASSWORD = "your_password"
-```
+**What happens after generation:** `sentinel-crop-generate` writes the
+original image/mask assets and a v3 `patches_log.csv`. Convert a completed
+cohort log with `sentinel-crop-adapt-patch-log` (specifying its unique
+`--dataset-id`, `--country` and `--cohort`) and create geographical
+train/validation/test partitions with the separate
+`sentinel-crop-split-spatial` command. Multi-cohort execution produces **separate** output directories; to merge
+compatible adapted manifests, use `sentinel-crop-merge-cohorts` with repeated
+`--manifest` arguments. It validates dataset/cohort identities, the band
+order, source labels, class counts, and asset references before writing
+`combined_manifest.csv` to a fresh directory. Then apply one audited
+`sentinel-crop-split-spatial` operation. See
+[cohort manifest aggregation](docs/cohort_manifest_merge.md).
 
-The repository includes `.env.example` as a template. Do not commit real credentials.
-
-## Configuration
-
-Dataset generation uses a configuration directory containing YAML files. The default configuration directory is:
-
-```text
-config/
-```
-
-Important configuration files include:
-
-```text
-config/generation.yaml
-config/paths.yaml
-config/eurocrops.yaml
-config/catalog.yaml
-config/dataset.yaml
-config/classes.yaml
-config/sentinel.yaml
-config/train_unet.yaml
-```
-
-`paths.dataset_output_dir` is used by dataset generation to write newly generated image-mask patches.
-
-`paths.dataset_root` is a generic dataset root used by training, evaluation, prediction, and smoke-test workflows when working with already generated datasets.
-
-The implemented generation source is:
-
-```yaml
-generation:
-  satellite: "sentinel2"
-  label_source: "eurocrops"
-```
-
-The project supports runtime configuration overrides through repeated `--override` arguments:
+**Included fully offline split demonstration** (no satellite images required):
 
 ```bash
---override dataset.target.total_patches=8
---override catalog.stac.limit=5
---override paths.dataset_output_dir="data/processed/example/generated"
+sentinel-crop-split-spatial --config config/examples/spatial_split.yaml \
+  --manifest examples/spatial_split_demo_manifest.csv \
+  --out-dir outputs/spatial_demo --validate-only
 ```
 
-Override values are parsed using YAML syntax, so values such as `true`, `false`, `null`, integers, floats, and lists are converted automatically.
-
-## Target classes
-
-The reduced taxonomy currently used by the project includes:
-
-```text
-0   background
-1   maize
-2   rapeseed
-3   wheat
-4   barley
-5   oats
-6   sunflower
-7   sugar beet
-8   soybean
-9   potato
-10  pasture
-```
-
-The mapping from raw EuroCrops labels to these classes is configured in `config/classes.yaml`.
-
-## Dataset generation
-
-Run dataset generation through the installed CLI:
-
-```bash
-sentinel-crop-generate \
-  --config-dir config \
-  --run-tag experiment_01
-```
-
-A local EuroCrops path can be supplied without modifying committed configuration files:
-
-```bash
-sentinel-crop-generate \
-  --config-dir config \
-  --run-tag experiment_01 \
-  --override eurocrops.shapefile_path="path/to/AT_2021_EC21.shp"
-```
-
-A smaller generation run can be requested with additional overrides:
-
-```bash
-sentinel-crop-generate \
-  --config-dir config \
-  --run-tag small_test \
-  --override eurocrops.shapefile_path="path/to/AT_2021_EC21.shp" \
-  --override paths.dataset_output_dir="data/processed/small_test/generated" \
-  --override dataset.target.total_patches=100 \
-  --override dataset.max_patches_per_roi=20 \
-  --override catalog.stac.limit=5
-```
-
-The generated dataset is saved under the configured `paths.dataset_output_dir` and typically contains:
-
-```text
-generated/
-  images/
-  masks/
-  images_tif/
-  masks_tif/
-  patches_log.csv
-```
-
-### ROI strategies
-
-The dataset generation pipeline supports two ROI selection strategies.
-
-Grid strategy:
-
-```yaml
-dataset:
-  roi:
-    strategy: "grid"
-```
-
-The grid strategy selects fixed-size regions based on crop polygon coverage.
-
-Hotcell strategy:
-
-```yaml
-dataset:
-  target:
-    class_id: 8
-    min_target_ratio: 0.05
-    min_target_pixels: 800
-    total_patches: 10000
-
-  roi:
-    strategy: "hotcell"
-```
-
-The hotcell strategy focuses ROI selection around a target crop class and requires `dataset.target.class_id` to be set.
-
-More details are available in:
-
-```text
-docs/dataset_generation.md
-```
-
-## U-Net training
-
-Train the U-Net baseline with:
-
-```bash
-sentinel-crop-train-unet \
-  --config config/train_unet.yaml
-```
-
-The training configuration controls:
-
-* dataset source;
-* manifest or root-folder loading;
-* selected Sentinel-2 bands;
-* normalization;
-* model size;
-* dropout;
-* class weights;
-* augmentation;
-* learning rate;
-* scheduler;
-* early stopping;
-* output directory.
-
-Training outputs are saved under the configured `paths.out_dir`, for example:
-
-```text
-outputs/experiments/<experiment_name>/
-  best.pt
-  last.pt
-  last_state.pt
-  training_metrics.csv
-  training_summary.json
-  model_info.json
-  metrics.jsonl
-  resolved_config.json
-```
-
-For small test runs, use CLI overrides instead of editing the training config:
-
-```bash
-sentinel-crop-train-unet \
-  --config config/train_unet.yaml \
-  --override paths.manifest_csv=null \
-  --override paths.train_root="data/processed/example/generated" \
-  --override paths.val_root="data/processed/example/generated" \
-  --override paths.out_dir="outputs/example_unet" \
-  --override data.train_limit=4 \
-  --override data.val_limit=4 \
-  --override training.epochs=1 \
-  --override training.batch_size=1 \
-  --override loader.num_workers=0 \
-  --override loader.prefetch_factor=null
-```
-
-## Random Forest baseline
-
-The repository also provides a Random Forest baseline CLI:
-
-```bash
-sentinel-crop-train-rf --help
-```
-
-A typical run uses a manifest CSV and writes the model and associated outputs to an experiment directory:
-
-```bash
-sentinel-crop-train-rf \
-  --manifest data/processed/sentinel_eurocrops/indexes/manifest.csv \
-  --out-dir outputs/experiments/random_forest_spectral \
-  --feature-mode spectral
-```
-
-## Evaluation
-
-Use the unified evaluation CLI:
-
-```bash
-sentinel-crop-evaluate --help
-```
-
-Example for evaluating a U-Net checkpoint on a root-folder dataset:
-
-```bash
-sentinel-crop-evaluate \
-  --model-type unet \
-  --data-source root \
-  --checkpoint outputs/experiments/example/best.pt \
-  --dataset-root data/processed/sentinel_eurocrops/generated \
-  --sample-format npy \
-  --output-dir outputs/evaluation/example_root \
-  --batch-size 1 \
-  --device cpu
-```
-
-Example for evaluating a U-Net checkpoint on a manifest split:
-
-```bash
-sentinel-crop-evaluate \
-  --model-type unet \
-  --data-source manifest \
-  --checkpoint outputs/experiments/example/best.pt \
-  --manifest-csv data/processed/sentinel_eurocrops/indexes/manifest.csv \
-  --split test \
-  --output-dir outputs/evaluation/example_manifest \
-  --batch-size 1 \
-  --device cpu
-```
-
-The evaluation output includes:
-
-```text
-summary.json
-summary.txt
-metrics_per_class.csv
-confusion_matrix_counts.npy
-confusion_matrix_row_norm.npy
-evaluated_samples.txt
-```
-
-## Prediction and visualization
-
-Use the prediction CLI:
-
-```bash
-sentinel-crop-predict --help
-```
-
-Example:
-
-```bash
-sentinel-crop-predict \
-  --model-type unet \
-  --data-source root \
-  --checkpoint outputs/experiments/example/best.pt \
-  --dataset-root data/processed/sentinel_eurocrops/generated \
-  --sample-format npy \
-  --output-dir outputs/predictions/example_root \
-  --batch-size 1 \
-  --device cpu \
-  --save-color \
-  --save-panels
-```
-
-Prediction outputs can include:
-
-```text
-prediction_samples.csv
-prediction_summary.json
-pred_masks_npy/
-pred_masks_color/
-gt_masks_color/
-rgb/
-panels/
-```
-
-## Minimal end-to-end smoke test
-
-A minimal end-to-end smoke test is provided for validating the complete installed pipeline:
-
-```bash
-python scripts/run_e2e_smoke_test.py \
-  --eurocrops-shapefile "path/to/AT_2021_EC21.shp"
-```
-
-A smaller validation run can be requested with:
-
-```bash
-python scripts/run_e2e_smoke_test.py \
-  --eurocrops-shapefile "path/to/AT_2021_EC21.shp" \
-  --run-tag zenodo_smoke_001 \
-  --target-patches 8 \
-  --limit 4 \
-  --device cpu
-```
-
-The smoke test runs:
-
-```text
-dataset generation
--> U-Net training
--> evaluation
--> prediction
-```
-
-It uses the default project configuration plus temporary runtime overrides. It does not require separate copied smoke-test configuration files.
-
-The test creates temporary outputs under:
-
-```text
-data/processed/e2e_smoke_dataset/
-outputs/e2e_smoke/
-```
-
-The generated smoke-test dataset contains:
-
-```text
-data/processed/e2e_smoke_dataset/generated/
-  images/
-  masks/
-  images_tif/
-  masks_tif/
-  patches_log.csv
-```
-
-The `outputs/e2e_smoke/` directory contains the temporary training, evaluation, and prediction outputs produced by the smoke test.
-
-The EuroCrops shapefile can also be provided through an environment variable:
-
-```bash
-export EUROCROPS_SHAPEFILE_PATH="path/to/AT_2021_EC21.shp"
-python scripts/run_e2e_smoke_test.py
-```
-
-On Windows PowerShell:
-
-```powershell
-$env:EUROCROPS_SHAPEFILE_PATH = "path/to/AT_2021_EC21.shp"
-python scripts\run_e2e_smoke_test.py
-```
-
-The smoke test is an online validation step because it uses Sentinel-2 catalog search and data retrieval. It may fail if external services, internet access, authentication, or local cache state are unavailable.
-
-Additional details are available in:
-
-```text
-docs/e2e_smoke_test.md
-```
-
-## Testing
-
-Run the test suite with:
-
-```bash
-python -m pytest -q
-```
-
-The tests cover important parts of the codebase, including:
-
-* configuration loading and overrides;
-* package entrypoints;
-* public CLI availability;
-* dataset loading;
-* manifest loading;
-* model forward pass;
-* loss behavior;
-* evaluation utilities;
-* prediction utilities;
-* dataset generation API behavior.
-
-The full online dataset generation process is not run as part of the normal unit test suite.
-
-## Documentation
-
-Additional documentation is available under `docs/`:
-
-```text
-docs/architecture.md
-docs/dataset_generation.md
-docs/training_and_evaluation.md
-docs/e2e_smoke_test.md
-```
-
-Some documents describe implementation details and research workflow decisions. The README is intended to reflect the current public usage path.
-
-## Files not included in the repository
-
-The following are intentionally excluded from version control:
-
-```text
-data/raw/
-data/external/
-data/processed/
-outputs/
-checkpoints/
-models/
-Sentinel-2 SAFE products
-generated datasets
-model checkpoints
-evaluation outputs
-prediction outputs
-```
-
-This keeps the repository focused on source code, configuration, documentation, and tests.
-
-## Validation status
-
-Before preparing the public archive, the following validation checks were run successfully:
-
-```text
-python -m pytest -q
-```
-
-and a minimal end-to-end smoke test was run successfully on a small generated dataset:
-
-```text
-dataset generation -> U-Net training -> evaluation -> prediction
-```
-
-These checks validate the main public pipeline, but they do not replace full-scale experimental reproduction.
-
-## License
-
-This project is released under the Creative Commons Attribution 4.0 International License (CC BY 4.0). See `LICENSE.md` for details.
-
-## Citation
-
-If this repository is archived through Zenodo, cite the archived release DOI associated with the version used in this work.
-
-A formal citation file can be added once the release metadata and DOI are finalized.
+Remove `--validate-only` and use a fresh output directory to emit the
+synthetic split reports. These demonstration rows are not a research dataset.
+
+The configurable OOF manifest planner documents new experiments in
+`docs/spatial_oof_folds.md`; it is **not** the historical article
+six-fold run and it does **not** train K models or calculate
+uncertainty scores.
+
+## Scope and known limitations
+
+- Broad genuine-source validation. The generator **has** been run once against real Copernicus Sentinel-2 L2A and a real EuroCrops shapefile, producing four verified patches, and the repeat was byte-identical; see [`docs/getting_started.md`](docs/getting_started.md). What is still missing is coverage: one cohort, one product, one date, one platform, and nothing on other countries or EuroCrops editions, the grid ROI strategy, calendar-controlled selection, multi-cohort runs or Linux. It is not part of CI, which needs no credentials and downloads nothing;
+- A model-checkpoint smoke test; no weights are included or approved;
+- final **OOF review outputs and human decisions** for the post-training filter
+  (the safe application utility is included; it does not train six fold models);
+- exact paper train/val/test samples and access/redistribution contract;
+- final U-Net checkpoint, checksum and model card;
+- frozen country/year and calendar **selection policy** matching the article
+  (the included calendar has AT/CZ/DE/FR/SK rows; use in the final acquisition
+  recipe has not been independently verified);
+- exact historical training-environment reconstruction and the independent dataset/model record licenses (outside this software-only release).
+
+This software distribution includes `CITATION.cff` with the reserved
+software version DOI `10.5281/zenodo.23714448`. The associated manuscript is submitted
+and has no article DOI; it is not described as accepted or published.
+
+Source-code tests are not equivalent to broad real-data validation.
+In particular, this software-only package does not reproduce the
+historical article dataset without separately obtained source inputs,
+frozen manifests and provenance. Dataset and model records are
+independently maintained.
+
+The source inventory and approval conditions are documented in the
+development repository's `release/zenodo_source_allowlist.json`.

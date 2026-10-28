@@ -1,7 +1,7 @@
 ﻿from pathlib import Path
 
-from src.pipeline import DatasetGenerationResult, generate_dataset
-from src.pipeline.dataset_generation import make_roi_key, _read_generation_config, _read_target_config
+from sentinel_crop_seg.core.pipeline import DatasetGenerationResult, generate_dataset
+from sentinel_crop_seg.core.pipeline.dataset_generation import make_roi_key, _read_generation_config, _read_target_config
 
 
 def test_pipeline_api_is_importable():

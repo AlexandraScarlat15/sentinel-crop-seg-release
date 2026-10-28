@@ -7,7 +7,7 @@ import pytest
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from src.evaluation.evaluator import evaluate_segmentation_predictor
+from sentinel_crop_seg.core.evaluation.evaluator import evaluate_segmentation_predictor
 
 
 class TinySegmentationDataset(Dataset):

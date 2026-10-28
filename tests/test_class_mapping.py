@@ -2,7 +2,7 @@
 
 import yaml
 
-from src.data.eurocrops_mask_loader import EuroCropsMaskLoader
+from sentinel_crop_seg.core.data.eurocrops_mask_loader import EuroCropsMaskLoader
 
 
 def make_loader_from_config_classes():
