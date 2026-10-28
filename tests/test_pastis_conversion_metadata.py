@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from src.external.pastis_conversion import (
+from sentinel_crop_seg.core.external.pastis_conversion import (
     save_metadata_csv,
     scene_date_from_yyyymmdd,
 )

@@ -5,8 +5,8 @@ from pathlib import Path
 import numpy as np
 from rasterio.transform import from_origin
 
-from src.geospatial.geotiff_writer import save_mask_geotiff, save_multiband_geotiff
-from src.training.dataset import SegmentationPatchDataset
+from sentinel_crop_seg.core.geospatial.geotiff_writer import save_mask_geotiff, save_multiband_geotiff
+from sentinel_crop_seg.core.training.dataset import SegmentationPatchDataset
 
 
 def test_segmentation_patch_dataset_loads_equivalent_npy_and_geotiff_samples(tmp_path: Path):

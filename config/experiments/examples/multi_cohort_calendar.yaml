@@ -1,0 +1,13 @@
+schema_version: 1
+name: at_fr_calendar_wheat_demo
+cohorts:
+  - id: AT_2021_WHEAT
+    country: AT
+    year: 2021
+    region: national
+    recipe: at_2021_calendar.yaml
+  - id: FR_2018_WHEAT
+    country: FR
+    year: 2018
+    region: national
+    recipe: fr_2018_calendar.yaml

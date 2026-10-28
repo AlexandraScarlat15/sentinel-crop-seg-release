@@ -1,0 +1,24 @@
+schema_version: 1
+name: fr_2018_wheat_calendar_demo
+settings:
+  eurocrops:
+    shapefile_path: data/external/eurocrops/FR_2018/FR_2018.shp
+  catalog:
+    stac:
+      start_date: "2018-04-01T00:00:00Z"
+      end_date: "2018-09-30T23:59:59Z"
+      max_cloud_cover: 10
+    calendar:
+      mode: selected_crop_union
+      file: config/crop_calendar_recalibrated_v0_3.csv
+      country: FR
+      year: 2018
+      crops: [Wheat]
+  dataset:
+    roi:
+      strategy: grid
+    target:
+      class_id: 3
+      total_patches: 100
+  paths:
+    dataset_output_dir: data/processed/examples/fr_2018_wheat_calendar

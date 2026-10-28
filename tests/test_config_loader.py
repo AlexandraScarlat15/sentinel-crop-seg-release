@@ -1,7 +1,7 @@
 ﻿import pytest
 import yaml
 
-from src.config_loader import load_config
+from sentinel_crop_seg.core.config_loader import load_config
 
 
 def write_yaml(path, data):

@@ -30,6 +30,15 @@ data:
   # Supported values: "npy", "geotiff".
   sample_format: "npy"
 
+# Historical labels remain the default baseline.  The corrected version is an
+# explicit opt-in config so no existing run switches labels implicitly.
+labels:
+  version: "historical"
+  corrected_manifest: null
+  corrected_mask_root: null
+  subset_to_dataset: {}
+  expected_corrected_records: null
+
 model:
   base: 48
   dropout_bottleneck: 0.1

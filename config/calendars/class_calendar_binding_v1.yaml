@@ -1,0 +1,16 @@
+schema_version: 1
+class_calendar:
+  maize: [Maize]
+  rapeseed: [Rapeseed]
+  wheat: [Wheat]
+  barley: [Barley]
+  oats: [Oats]
+  sunflower: [Sunflower]
+  sugar_beet: [Sugar beet]
+  soybean: [Soybean]
+  potato: [Potato]
+  pasture:
+    - Grassland / pasture
+    - Arable grass
+    - Clover
+    - Lucerne / alfalfa

@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 import torch
 
-from src.evaluation.reporting import (
+from sentinel_crop_seg.core.evaluation.reporting import (
     save_confusion_matrices,
     save_evaluated_samples_txt,
     save_evaluation_report,

@@ -1,7 +1,7 @@
 ﻿import numpy as np
 import pytest
 
-from src.training.dataset import NpySegmentationDataset, SegmentationPatchDataset
+from sentinel_crop_seg.core.training.dataset import NpySegmentationDataset, SegmentationPatchDataset
 
 
 def create_tiny_npy_dataset(root, num_samples=3, channels=10, height=8, width=8):

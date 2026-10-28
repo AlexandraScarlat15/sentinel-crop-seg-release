@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+# Software citation for the curated Sentinel-2/EuroCrops crop-segmentation
+# package. The DOI identifies a RESERVED Zenodo new-version draft;
+# it is not evidence that the record is already published.
+# date-released is only asserted if the author supplies the intended
+# publication date at preparation time.
+# `preferred-citation` IS present, and carries `status: submitted` with no DOI.
+# The manuscript is under review: it is neither accepted nor published, and
+# nothing here may suggest otherwise. The status is what makes the reference
+# honest, so the checker requires a DOI-less preferred-citation to declare one.
+message: "Cite this software when using the Sentinel-2/EuroCrops crop-segmentation pipeline. This record describes the SOFTWARE only; prefer the associated manuscript, which is currently under review and carries no DOI. The dataset and model weights are separate Zenodo records; see release/ZENODO_DEPOSIT_ARCHITECTURE.md."
+type: software
+title: "Sentinel-2 Crop Segmentation: Curated Research Software"
+abstract: >-
+  Research software for building and evaluating a Sentinel-2 Level-2A
+  semantic-segmentation benchmark over EuroCrops parcel annotations. It
+  covers Sentinel-2 scene discovery and SAFE loading, Scene Classification
+  Layer cloud and nodata filtering, grid and hotcell region-of-interest
+  selection, ten-band 256x256 patch and mask generation, patch-level
+  provenance logging, geographically blocked train/validation/test splitting
+  and out-of-fold planning, optional crop-calendar scene-acquisition windows,
+  four-level U-Net training, checkpoint evaluation and prediction, and a
+  post-training label-uncertainty review filter that consumes precomputed
+  parcel-review evidence. The package distributes code, configuration and
+  tests only: Sentinel-2 products, EuroCrops vectors, the article dataset and
+  trained weights are obtained or cited separately.
+authors:
+  - family-names: "Scarlat"
+    given-names: "Alexandra Nicoleta"
+    orcid: "https://orcid.org/0009-0009-5924-3027"
+    affiliation: "Transilvania University of Brașov, Faculty of Mathematics and Computer Science"
+version: "2.0.0"
+doi: "10.5281/zenodo.23714448"
+license: CC-BY-4.0
+repository-code: "https://github.com/AlexandraScarlat15/sentinel-crop-seg"
+keywords:
+  - Sentinel-2
+  - EuroCrops
+  - crop mapping
+  - semantic segmentation
+  - remote sensing
+  - reproducibility
+# The work this software supports. Authorship here is the MANUSCRIPT's author
+# list and is deliberately not the same as the software `authors` above: this
+# record credits who wrote the code, the citation below credits who wrote the
+# paper.
+preferred-citation:
+  type: article
+  status: submitted
+  title: "From EuroCrops to Sentinel-2: An Open-Source Configurable Pipeline for Semantic Crop Segmentation Dataset Generation and Benchmarking"
+  authors:
+    - family-names: "Scarlat"
+      given-names: "Alexandra Nicoleta"
+      orcid: "https://orcid.org/0009-0009-5924-3027"
+    - family-names: "Plajer"
+      given-names: "Ioana Cristina"
+      orcid: "https://orcid.org/0000-0002-2666-8215"
+    - family-names: "Băicoianu"
+      given-names: "Alexandra"
+      orcid: "https://orcid.org/0000-0002-1264-3404"
+  journal: "Environmental Modelling & Software"
+  year: 2026
+  notes: "Manuscript ID ENVSOFT-D-26-01839, under review. No DOI is asserted because none exists; this is not an accepted or published reference."

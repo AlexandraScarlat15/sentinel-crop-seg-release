@@ -1,0 +1,8 @@
+cohort,parcel_key,dataset,sample_id,partition,admissible_min_pixels
+AT_2021,AT_2021|fid=1001,AT_2021,AT_2021_sample_00,train,true
+AT_2021,AT_2021|fid=1002,AT_2021,AT_2021_sample_01,train,true
+AT_2021,AT_2021|fid=1002,AT_2021,AT_2021_sample_02,train,true
+AT_2021,AT_2021|fid=1003,AT_2021,AT_2021_sample_03,val,true
+FR_2018,FR_2018|fid=2001,FR_2018,FR_2018_sample_00,train,true
+FR_2018,FR_2018|fid=2002,FR_2018,FR_2018_sample_03,val,true
+FR_2018,FR_2018|fid=2003,FR_2018,FR_2018_sample_01,train,true

@@ -1,0 +1,11 @@
+dataset,sample_id,cohort,country,split,partition,img_path,mask_path
+AT_2021,AT_2021_sample_00,AT_2021,AT,train,train,images/AT_2021_sample_00.npy,masks/AT_2021_sample_00.npy
+AT_2021,AT_2021_sample_01,AT_2021,AT,train,train,images/AT_2021_sample_01.npy,masks/AT_2021_sample_01.npy
+AT_2021,AT_2021_sample_02,AT_2021,AT,train,train,images/AT_2021_sample_02.npy,masks/AT_2021_sample_02.npy
+AT_2021,AT_2021_sample_03,AT_2021,AT,val,val,images/AT_2021_sample_03.npy,masks/AT_2021_sample_03.npy
+AT_2021,AT_2021_sample_04,AT_2021,AT,test,test,images/AT_2021_sample_04.npy,masks/AT_2021_sample_04.npy
+FR_2018,FR_2018_sample_00,FR_2018,FR,train,train,images/FR_2018_sample_00.npy,masks/FR_2018_sample_00.npy
+FR_2018,FR_2018_sample_01,FR_2018,FR,train,train,images/FR_2018_sample_01.npy,masks/FR_2018_sample_01.npy
+FR_2018,FR_2018_sample_02,FR_2018,FR,train,train,images/FR_2018_sample_02.npy,masks/FR_2018_sample_02.npy
+FR_2018,FR_2018_sample_03,FR_2018,FR,val,val,images/FR_2018_sample_03.npy,masks/FR_2018_sample_03.npy
+FR_2018,FR_2018_sample_04,FR_2018,FR,test,test,images/FR_2018_sample_04.npy,masks/FR_2018_sample_04.npy

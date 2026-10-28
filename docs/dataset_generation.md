@@ -52,6 +52,54 @@ config/
 
 The configuration files are loaded and merged into a single configuration dictionary.
 
+### Reproducible isolated configuration (new)
+
+The historical loader merged **every** root-level `config/*.yaml`, in
+alphabetical order. That includes unrelated training/revision recipes, which
+can silently override generation settings. To preserve paper reproducibility,
+the default generator API and CLI remain in `legacy` mode.
+
+For **new** dataset generation runs, use `--config-mode isolated`. It reads
+only these seven files in an explicit order:
+
+`generation.yaml`, `paths.yaml`, `eurocrops.yaml`, `catalog.yaml`,
+`dataset.yaml`, `classes.yaml`, `sentinel.yaml`.
+
+It refuses missing required YAML files and does not ingest training experiment
+YAMLs. Existing dotted-key `--override` values are applied **after** merging.
+
+Before doing any network access or generation, inspect the recipe:
+
+```bash
+python -m sentinel_crop_seg.cli.audit_generation_config --config-dir config --config-mode isolated
+```
+
+This command prints only a safe overview (sampling settings, ordered band
+names, selected config file names) and a SHA-256 of the canonical resolved
+configuration. It does not read the EuroCrops vector or any Sentinel data,
+change files, or download products. Overrides are supported:
+
+```bash
+python -m sentinel_crop_seg.cli.audit_generation_config --config-dir config \
+  --override dataset.roi.strategy=grid --override dataset.target.class_id=null
+```
+
+To generate **a new experiment** using that explicit recipe:
+
+```bash
+python -m sentinel_crop_seg.cli.generate --config-dir config \
+  --config-mode isolated --run-tag experiment_001
+```
+
+For exact reproduction of previous runs, omit the flag (default: `legacy`).
+Do **not** change configuration mode while appending samples to an existing
+dataset. The printed configuration hash remains an offline audit aid; it
+is **not** a run ledger on its own. For **new runs**, the separately implemented
+[strict resume guard](generation_resume_guard.md) binds configuration,
+taxonomy, source vector files, generator code and output state using
+`--config-mode isolated --resume-policy strict`. Legacy remains the default.
+Use fresh output paths and `run_tag` values for different experiments.
+
 Runtime overrides can be provided through repeated `--override key=value` arguments. This is useful for local paths, small test runs, or temporary output directories without modifying tracked configuration files.
 
 Example:
@@ -157,6 +205,29 @@ Patch size controls the spatial size of each extracted sample. Stride controls o
 
 `max_patches_per_roi` limits how many accepted patches can be extracted from a single ROI.
 
+`dataset.target.total_patches` now defines an **exact upper bound on newly
+accepted patches in one generation invocation** when the value is positive.
+The pipeline passes the remaining count to `DataEngine.save_dataset`, which
+stops immediately after the last allowed accepted patch, even within the
+last ROI/product. A value of `0` (or less, for legacy compatibility) leaves
+the global target disabled; the ordinary ROI limit still applies.
+
+This is an upper bound, not a guarantee of reaching the target: fewer patches
+may satisfy filtering, and product/ROI availability may be insufficient.
+Rejected candidate patches do not consume the quota. The optional
+`max_new_patches` engine parameter defaults to `None`, retaining its original
+per-ROI-only behavior for existing Python callers.
+
+**Important scope:** counts are for the current invocation; the routine does
+not deduct previously generated files already present in an output directory.
+Legacy mode cannot safely append to an existing dataset after changing the
+target or recipe. For new isolated experiments, the opt-in
+[strict resume guard](generation_resume_guard.md) detects changes and refuses
+unsafe resumes. The exact target is cumulative across clean strict sessions.
+A quota reached in the middle of an ROI/product is **not** a certified
+checkpoint for later increasing the target: create a new experiment using
+a fresh output directory and `run_tag`.
+
 ### Filtering settings
 
 The dataset configuration also controls foreground, nodata, cloud, and target-class filtering.
@@ -176,6 +247,11 @@ dataset:
 
 These thresholds are applied during patch extraction to reject unsuitable samples.
 
+Synthetic end-to-end tests now cover bad/valid SCL classes, nearest-grid cloud
+mask semantics, dilation, foreground-specific cloud filtering, B02 brightness
+and nodata without downloading imagery. See [ROI Sampling and Cloud-Quality
+Audit](roi_sampling_cloud_quality.md) for exact current behavior and limits.
+
 ## ROI sampling strategies
 
 ROI selection decides where the pipeline should search for image-mask patches.
@@ -184,6 +260,14 @@ The project currently supports two ROI strategies:
 
 * `grid`
 * `hotcell`
+
+For NEW runs, the grid selector supports `dataset.roi.area_mode: union`, and
+the hotcell selector supports `dataset.roi.hotcell.area_mode: union`. This
+calculates **unified clipped polygon area** rather than double-counting
+overlapping parcel geometries, and requires a metric projected CRS. The
+historical default remains `legacy_sum`; changing modes can change the
+selected ROI population. See [ROI Sampling and Cloud-Quality
+Audit](roi_sampling_cloud_quality.md) for examples and reproducibility caveats.
 
 ### Grid strategy
 
@@ -286,6 +370,12 @@ Each mask sample is a 2D segmentation mask in `H x W` format, with integer class
 
 The NumPy outputs are used by the training and evaluation code. The GeoTIFF outputs preserve geospatial information for inspection and external analysis.
 
+For an **existing schema-v3 `patches_log.csv`**, the independent
+[patch-log adapter](patch_log_adapter.md) preserves all original metadata and
+produces a new georeferenced CSV compatible with Spatial Splitting and the
+manifest-based training loader. It never modifies the original generator,
+NPY files, GeoTIFF files, masks or patch log.
+
 ## Command-line usage
 
 The installed command-line entrypoint is:
@@ -368,22 +458,24 @@ The processed-state file is stored under `paths.sentinel_data_root`.
 
 For fresh test runs, use a new `--run-tag` or remove the corresponding processed-state file.
 
-## Minimal E2E generation check
+## Portable preflight and genuine-data smoke-test boundary
 
-The repository includes a minimal end-to-end smoke test that runs dataset generation, training, evaluation, and prediction:
+The **curated Zenodo software package does not include** the research-only
+`scripts/run_e2e_smoke_test.py`. Run an offline recipe preflight from the
+installed package root instead:
 
 ```bash
-python scripts/run_e2e_smoke_test.py \
-  --eurocrops-shapefile "path/to/AT_2021_EC21.shp"
+sentinel-crop-audit-generation-config --config-dir config \
+  --experiment config/experiments/examples/at_2021_calendar.yaml
 ```
 
-This script uses the normal configuration files plus runtime overrides. It is intended to verify that the installed pipeline works end to end on a small local run.
-
-More details are available in:
-
-```text
-docs/e2e_smoke_test.md
-```
+This validates declared settings and calendar provenance **without**
+downloading satellite imagery or inspecting the actual EuroCrops vectors.
+For a genuine-source smoke test, replace the example vector path and output
+directory with approved local sources, use the versioned recipe under the
+independent `sentinel-crop-generate` CLI, and separately inspect
+`patches_log.csv`, written image/mask assets and their source identifiers.
+No genuine-data E2E validation is claimed for the curated package yet.
 
 ## Practical notes
 
