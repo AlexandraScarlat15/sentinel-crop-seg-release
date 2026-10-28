@@ -188,9 +188,9 @@ overcapture — and per-pixel metrics are not comparable across countries.
 ## What this archive does not include
 
 No Sentinel-2 products, no EuroCrops vectors, no generated dataset, no trained
-weights and no out-of-fold review evidence. The dataset and the model are
-separate archive records; the label-review tool here ships with a synthetic
-example of its input contract rather than the real review evidence.
+weights and no out-of-fold review evidence. A combined dataset-and-model Zenodo record is planned but not yet published.
+The label-review tool here ships with a synthetic example of its input
+contract rather than the real review evidence.
 
 ## Where to go next
 

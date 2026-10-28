@@ -1,6 +1,6 @@
 # Sentinel-2 Crop Segmentation — curated research software
 
-**Version 2.0.0: software-only distribution.** The historical research dataset and trained checkpoints are separate records.
+**Version 2.0.0: software-only distribution.** The historical research dataset and trained model are not included. A combined dataset-and-model Zenodo record is planned separately, subject to dataset provenance, attribution and model approval.
 
 This selectively staged package demonstrates the **Sentinel-2 L2A + EuroCrops**
 dataset generation workflow and four-level U-Net training. It does **not**
@@ -204,8 +204,9 @@ and has no article DOI; it is not described as accepted or published.
 Source-code tests are not equivalent to broad real-data validation.
 In particular, this software-only package does not reproduce the
 historical article dataset without separately obtained source inputs,
-frozen manifests and provenance. Dataset and model records are
-independently maintained.
+frozen manifests and provenance. The planned dataset record will package the
+frozen research data and an approved U-Net checkpoint together, subject to
+separate verification of their provenance and redistribution rights.
 
 The source inventory and approval conditions are documented in the
 development repository's `release/zenodo_source_allowlist.json`.
