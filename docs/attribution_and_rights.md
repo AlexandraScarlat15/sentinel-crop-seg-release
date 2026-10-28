@@ -44,8 +44,8 @@ license unfit for its purpose and ambiguous for reusers. Resolving it means an
 author decision on a software license (permissive or copyleft), recorded in
 `LICENSE.md` and in the record metadata. Documentation, configuration and
 figures may legitimately stay under CC BY 4.0 — a **mixed-license record** is
-normal on Zenodo and is the likely outcome. See decision D1 in
-`release/ZENODO_DEPOSIT_ARCHITECTURE.md`.
+normal on Zenodo and is one option for an eventual licensing decision.
+The final choice requires explicit rights-holder and supervisor review.
 
 ## Primary sources to review
 

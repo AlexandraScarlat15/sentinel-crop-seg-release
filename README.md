@@ -208,5 +208,6 @@ frozen manifests and provenance. The planned dataset record will package the
 frozen research data and an approved U-Net checkpoint together, subject to
 separate verification of their provenance and redistribution rights.
 
-The source inventory and approval conditions are documented in the
-development repository's `release/zenodo_source_allowlist.json`.
+The source inventory and approval conditions are maintained in the private
+development repository and are not part of this public software distribution.
+The Zenodo software archive contains its own build report and SHA-256 checksums.
