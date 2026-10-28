@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sentinel-crop-seg"
 version = "2.0.0"
-description = "Curated Sentinel-2 / EuroCrops crop segmentation research software (draft)"
+description = "Curated Sentinel-2 / EuroCrops crop segmentation research software"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{name = "Alexandra Nicoleta Scarlat"}]

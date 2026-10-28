@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  curated-package:
+    name: Curated package / Python 3.11
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Verify public release metadata and exclusions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tomllib
+          import yaml
+          root = Path(".")
+          with (root / "pyproject.toml").open("rb") as f:
+              project = tomllib.load(f)["project"]
+          cff = yaml.safe_load((root / "CITATION.cff").read_text(encoding="utf-8"))
+          assert project["version"] == cff["version"] == "2.0.0"
+          assert "draft" not in project["description"].lower()
+          assert cff["repository-code"] == "https://github.com/AlexandraScarlat15/sentinel-crop-seg-release"
+          assert cff["doi"] == "10.5281/zenodo.23714448"
+          assert cff["preferred-citation"]["status"] == "submitted"
+          assert "doi" not in cff["preferred-citation"]
+          for path in ("src", "scripts", "sentinel_crop_seg/core/baselines", "sentinel_crop_seg/cli/train_random_forest.py"):
+              assert not (root / path).exists(), f"Excluded code shipped: {path}"
+          print("Version, DOI, repository, publication status and exclusions verified")
+          PY
+      - name: Run curated tests (offline)
+        run: python -m pytest tests -q --maxfail=1
+      - name: Smoke test installed CLIs without source data
+        run: |
+          sentinel-crop-generate --help
+          sentinel-crop-split-spatial --help
+          sentinel-crop-train-unet --help
+          sentinel-crop-evaluate-unet --help
+          sentinel-crop-predict-unet --help

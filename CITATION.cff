@@ -8,7 +8,7 @@ cff-version: 1.2.0
 # The manuscript is under review: it is neither accepted nor published, and
 # nothing here may suggest otherwise. The status is what makes the reference
 # honest, so the checker requires a DOI-less preferred-citation to declare one.
-message: "Cite this software when using the Sentinel-2/EuroCrops crop-segmentation pipeline. This record describes the SOFTWARE only; prefer the associated manuscript, which is currently under review and carries no DOI. The dataset and model weights are separate Zenodo records; see release/ZENODO_DEPOSIT_ARCHITECTURE.md."
+message: "Cite this software when using the Sentinel-2/EuroCrops crop-segmentation pipeline. This record describes the SOFTWARE only; prefer the associated manuscript, which is currently under review and carries no DOI. The research dataset and an approved U-Net checkpoint are planned for a separate, combined Zenodo dataset record; neither is included here."
 type: software
 title: "Sentinel-2 Crop Segmentation: Curated Research Software"
 abstract: >-
@@ -32,7 +32,7 @@ authors:
 version: "2.0.0"
 doi: "10.5281/zenodo.23714448"
 license: CC-BY-4.0
-repository-code: "https://github.com/AlexandraScarlat15/sentinel-crop-seg"
+repository-code: "https://github.com/AlexandraScarlat15/sentinel-crop-seg-release"
 keywords:
   - Sentinel-2
   - EuroCrops

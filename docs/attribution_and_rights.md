@@ -1,4 +1,4 @@
-# Attribution, licensing and redistribution review — DRAFT
+# Attribution, licensing and redistribution review — action required
 
 **This is an unresolved release-rights checklist, not a license grant, legal
 opinion or permission to distribute the underlying satellite/parcel data.**
@@ -44,8 +44,8 @@ license unfit for its purpose and ambiguous for reusers. Resolving it means an
 author decision on a software license (permissive or copyleft), recorded in
 `LICENSE.md` and in the record metadata. Documentation, configuration and
 figures may legitimately stay under CC BY 4.0 — a **mixed-license record** is
-normal on Zenodo and is the likely outcome. See decision D1 in
-`release/ZENODO_DEPOSIT_ARCHITECTURE.md`.
+normal on Zenodo and is one option for an eventual licensing decision.
+The final choice requires explicit rights-holder and supervisor review.
 
 ## Primary sources to review
 
@@ -81,9 +81,11 @@ normal on Zenodo and is the likely outcome. See decision D1 in
 | Which national declarations/third-party notices must travel with any published derived dataset? | **UNVERIFIED** |
 | What is the accurate paper status, author list, DOI and any publisher-policy constraint? | **UNVERIFIED** |
 | Which existing checkpoint(s) can be redistributed under what terms? | **DEFERRED** |
-| Are final software, dataset and model Zenodo records appropriately licensed separately? | **UNAPPROVED** |
+| Are the software and the planned combined dataset/model Zenodo records appropriately licensed and attributed? | **UNAPPROVED** |
 
 Only mark an item approved after locating the relevant source or explicit
 author/supervisor decision. This document intentionally does not assert that
-any dataset, checkpoint or paper can yet be published. The package remains
-`DO_NOT_PUBLISH_DRAFT`, and `release_ready` remains false.
+any dataset, checkpoint or paper can yet be published. The software package
+has passed its mechanical final-candidate staging checks; that does not
+resolve the approval questions above or authorize Zenodo publication. The
+combined dataset/model record is not yet prepared or published.
